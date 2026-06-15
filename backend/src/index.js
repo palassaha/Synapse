@@ -7,6 +7,7 @@ import fs from "fs";
 import path from "path";
 import cronJobs from "./lib/cron.js";
 import clerkWebhook from "./webhooks/clerk.webhook.js";
+import authRoutes from "./routes/auth.route.js";
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL;
 
 const publicPath = path.join(process.cwd(), "public");
 
+// WebHook
 app.use("/api/webhooks/clerk", express.raw({ type: "application/json" }), clerkWebhook);
 
 // Middlewares
@@ -35,6 +37,8 @@ app.get("/health", (req, res) => {
         message: "Up and running",
     })
 })
+
+app.use("/api/auth", authRoutes)
 
 // For production, serve the frontend static files
 if (fs.existsSync(publicPath)) {
