@@ -35,7 +35,7 @@ app.get("/health", (req, res) => {
 // For production, serve the frontend static files
 if (fs.existsSync(publicPath)) {
     app.use(express.static(publicPath));
-    app.get("*", (req, res, next) => {
+    app.get("/{*any}", (req, res, next) => {
         res.sendFile(path.join(publicPath, "index.html"), (err) => next(err));
     });
 }
