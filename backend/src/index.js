@@ -8,6 +8,7 @@ import path from "path";
 import cronJobs from "./lib/cron.js";
 import clerkWebhook from "./webhooks/clerk.webhook.js";
 import authRoutes from "./routes/auth.route.js";
+import messagesRoutes from "./routes/message.route.js";
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.get("/health", (req, res) => {
 })
 
 app.use("/api/auth", authRoutes)
+app.use("/api/messages", messagesRoutes);
 
 // For production, serve the frontend static files
 if (fs.existsSync(publicPath)) {
