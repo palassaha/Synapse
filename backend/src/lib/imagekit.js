@@ -1,4 +1,4 @@
-import Imagekit, { toFile } from "imagekit";
+import Imagekit, { toFile } from "@imagekit/nodejs";
 import dotenv from "dotenv";
 
 dotenv.config();
