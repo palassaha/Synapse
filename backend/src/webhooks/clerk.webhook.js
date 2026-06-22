@@ -26,6 +26,8 @@ router.post("/", async (req, res) => {
 
         const event = await verifyWebhook(request, { signingSecret });
 
+        console.log("Received Clerk webhook event:", event, req);
+
         if (event.type === "user.created" || event.type === "user.updated") {
             const userData = event.data;
 
@@ -45,6 +47,7 @@ router.post("/", async (req, res) => {
         }
 
         res.status(200).json({ received: true });
+
     } catch (error) {
         console.error("Error processing Clerk webhook:", error);
         res.status(400).json({ error: "Invalid webhook payload or signature." });
