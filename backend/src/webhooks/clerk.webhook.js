@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
 
         const event = await verifyWebhook(request, { signingSecret });
 
-        console.log("Received Clerk webhook event:", event, req);
+        console.log("Received Clerk webhook event:", event.data, req);
 
         if (event.type === "user.created" || event.type === "user.updated") {
             const userData = event.data;
