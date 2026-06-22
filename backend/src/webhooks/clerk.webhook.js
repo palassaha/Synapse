@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
 
         const event = await verifyWebhook(request, { signingSecret });
 
-        console.log("Received Clerk webhook event:", event.data, req);
+        console.log("Received Clerk webhook event:", event.data);
 
         if (event.type === "user.created" || event.type === "user.updated") {
             const userData = event.data;
@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
             await User.findOneAndUpdate(
                 { clerkId: userData.id },
                 { clerkId: userData.id, email, fullName, profilePic: userData.image_url },
-                { new: true, upsert: true, setDefaultsOnInsert: true }
+                { returnDocument: 'after' }
             )
         }
 
