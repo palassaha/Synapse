@@ -45,13 +45,13 @@ function ChatSidebar() {
 
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
 
-  const conversationUsers = conversations.map((user) => mapUserForList(user, onlineUsers));
-  const allUsers = users.map((user) => mapUserForList(user, onlineUsers));
+  const conversationUsers = conversations?.map((user) => mapUserForList(user, onlineUsers));
+  const allUsers = users?.map((user) => mapUserForList(user, onlineUsers));
 
   const filteredConversations = normalizedSearchQuery
     ? conversationUsers.filter((conversation) =>
-        conversation.peer.name.toLowerCase().includes(normalizedSearchQuery),
-      )
+      conversation.peer.name.toLowerCase().includes(normalizedSearchQuery),
+    )
     : conversationUsers;
 
   const filteredUsers = normalizedSearchQuery
@@ -60,9 +60,8 @@ function ChatSidebar() {
 
   return (
     <aside
-      className={`w-full shrink-0 flex-col overflow-hidden border-r border-border lg:w-72 ${
-        !isLargeScreen && activeConversationId ? "hidden lg:flex" : "flex"
-      }`}
+      className={`w-full shrink-0 flex-col overflow-hidden border-r border-border lg:w-72 ${!isLargeScreen && activeConversationId ? "hidden lg:flex" : "flex"
+        }`}
     >
       <div className="shrink-0 border-b border-border px-2 pb-2 pt-2.5 sm:px-3 sm:pt-3">
         <div className="flex items-center gap-2 px-0.5 sm:gap-2.5 sm:px-1">
@@ -124,7 +123,7 @@ function ChatSidebar() {
               No conversations match your search.
             </p>
           ) : (
-            filteredConversations.map((conversation) => (
+            filteredConversations?.map((conversation) => (
               <ConversationRow
                 key={conversation.id}
                 user={conversation}
@@ -139,7 +138,7 @@ function ChatSidebar() {
           {filteredUsers.length === 0 ? (
             <p className="px-4 py-6 text-center text-sm text-muted">No people match your search.</p>
           ) : (
-            filteredUsers.map((user) => (
+            filteredUsers?.map((user) => (
               <ConversationRow
                 key={user.conversationId}
                 user={user}
