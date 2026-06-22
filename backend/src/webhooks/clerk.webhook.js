@@ -28,31 +28,20 @@ router.post("/", async (req, res) => {
 
         if (event.type === "user.created" || event.type === "user.updated") {
             const userData = event.data;
-            const clerkId = typeof userData?.id === "string" ? userData.id.trim() : userData?.id;
-
-            if (!clerkId) {
-                console.error("Clerk webhook payload is missing a user id", {
-                    type: event.type,
-                    data: userData,
-                });
-                return res.status(400).json({ error: "Webhook payload missing Clerk user id." });
-            }
 
             const email = userData.email_addresses?.find((e) => e.id === userData.primary_email_address_id)?.email_address ?? userData.email_addresses?.[0]?.email_address;
 
             const fullName = [userData.first_name, userData.last_name].filter(Boolean).join(" ") || userData.username || email?.split("@")[0];
 
             await User.findOneAndUpdate(
-                { clerkId },
-                { clerkId, email, fullName, profilePic: userData.image_url },
-                { new: true, upsert: true, setDefaultsOnInsert: true, runValidators: true }
+                { clerkId: userData.id },
+                { clerkId: userData.id, email, fullName, profilePic: userData.image_url },
+                { new: true, upsert: true, setDefaultsOnInsert: true }
             )
         }
 
         if (event.type === "user.deleted") {
-            const clerkId = typeof event.data?.id === "string" ? event.data.id.trim() : event.data?.id;
-
-            if (clerkId) await User.findOneAndDelete({ clerkId });
+            if (event.data.id) await User.findOneAndDelete({ clerkId: event.data.id });
         }
 
         res.status(200).json({ received: true });
