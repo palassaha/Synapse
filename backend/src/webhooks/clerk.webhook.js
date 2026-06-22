@@ -13,7 +13,6 @@ router.post("/", async (req, res) => {
 
         if (!signingSecret) {
             return res.status(500).json({ error: "Webhook signing secret is not configured." });
-            return;
         }
 
         const payload = Buffer.isBuffer(req.body) ? req.body.toString("utf8") : String(req.body);
@@ -36,14 +35,14 @@ router.post("/", async (req, res) => {
             const fullName = [userData.first_name, userData.last_name].filter(Boolean).join(" ") || userData.username || email?.split("@")[0];
 
             await User.findOneAndUpdate(
-                { clerkId: userData.id },
-                { clerkId: userData.id, email, fullName, profilePic: userData.image_url },
-                { returnDocument: 'after' }
+                { clerkID: userData.id },
+                { clerkID: userData.id, email, fullName, profilePic: userData.image_url },
+                { upsert: true, returnDocument: "after" }
             )
         }
 
         if (event.type === "user.deleted") {
-            if (event.data.id) await User.findOneAndDelete({ clerkId: event.data.id });
+            if (event.data.id) await User.findOneAndDelete({ clerkID: event.data.id });
         }
 
         res.status(200).json({ received: true });
