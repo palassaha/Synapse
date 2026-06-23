@@ -1,7 +1,7 @@
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
 import { hasImagekitConfig, uploadMedia } from "../lib/imagekit.js";
-import { getReceiverSocketId } from "../lib/socket.js";
+import { getReceiverSocketId, io } from "../lib/socket.js";
 
 export async function getUsersInSidebar(req, res) {
     try {
@@ -24,17 +24,17 @@ export async function getConversationsInSidebar(req, res) {
             {
                 $match: {
                     $or: [
-                        { sender: loggedInUser },
-                        { receiver: loggedInUser }]
+                        { senderId: loggedInUser },
+                        { receiverId: loggedInUser }]
                 }
             },
             {
                 $group: {
                     _id: {
                         $cond: [
-                            { $eq: ["$sender", loggedInUser] },
-                            "$receiver",
-                            "$sender"
+                            { $eq: ["$senderId", loggedInUser] },
+                            "$receiverId",
+                            "$senderId"
                         ]
                     },
                     lastMessage: { $max: "$createdAt" },
@@ -82,8 +82,8 @@ export async function getMessagesByUserId(req, res) {
 
         const messages = await Message.find({
             $or: [
-                { sender: loggedInUser, receiver: userIdChat },
-                { sender: userIdChat, receiver: loggedInUser },
+                { senderId: loggedInUser, receiverId: userIdChat },
+                { senderId: userIdChat, receiverId: loggedInUser },
             ]
         }).sort({ createdAt: 1 });
 
@@ -119,8 +119,8 @@ export async function sendMessage(req, res) {
         }
 
         const newMessage = new Message({
-            sender: senderId,
-            receiver: receiverId,
+            senderId,
+            receiverId,
             text,
             image: imageUrl,
             video: videoUrl

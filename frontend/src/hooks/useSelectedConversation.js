@@ -53,8 +53,8 @@ export function useSelectedConversation() {
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
 
   const selectedUser = activeConversationId
-    ? users.find((user) => user._id === activeConversationId) ||
-      conversations.find((user) => user._id === activeConversationId)
+    ? users.filteredUsers?.find((user) => user._id === activeConversationId) ||
+    conversations.find((user) => user._id === activeConversationId)
     : null;
 
   const activeConversation = selectedUser

@@ -108,7 +108,7 @@ export const useChatStore = create(
         set((state) => ({
           activeConversationId,
           selectedUser:
-            state.users.find((user) => user._id === activeConversationId) ||
+            state.users.filteredUsers?.find((user) => user._id === activeConversationId) ||
             state.conversations.find((user) => user._id === activeConversationId) ||
             null,
           messages: activeConversationId ? state.messages : [],

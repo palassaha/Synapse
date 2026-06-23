@@ -28,7 +28,6 @@ function mapUserForList(user, onlineUsers) {
 function ChatSidebar() {
   const conversations = useChatStore((state) => state.conversations);
 
-  console.log(conversations);
   const users = useChatStore((state) => state.users);
 
   const searchQuery = useChatStore((state) => state.searchQuery);
@@ -46,7 +45,8 @@ function ChatSidebar() {
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
 
   const conversationUsers = conversations?.map((user) => mapUserForList(user, onlineUsers));
-  const allUsers = users?.map((user) => mapUserForList(user, onlineUsers));
+
+  const allUsers = users !== undefined ? users.filteredUsers?.map((user) => mapUserForList(user, onlineUsers)) : [];
 
   const filteredConversations = normalizedSearchQuery
     ? conversationUsers.filter((conversation) =>
@@ -135,7 +135,7 @@ function ChatSidebar() {
         </Tabs.Panel>
 
         <Tabs.Panel id="users" className="flex-1 overflow-x-hidden overflow-y-auto outline-none">
-          {filteredUsers.length === 0 ? (
+          {filteredUsers === undefined || filteredUsers.length === 0 ? (
             <p className="px-4 py-6 text-center text-sm text-muted">No people match your search.</p>
           ) : (
             filteredUsers?.map((user) => (
